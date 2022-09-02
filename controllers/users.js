@@ -1,10 +1,14 @@
 const User = require("../models/users");
 
+const ERROR_CODE = 400;
+const ERROR_BAD_REQ = 404;
+const ERROR_SERVER = 500;
+
 const getUsers = (req, res) => {
   User.find({})
     .then(users => res.send(users))
     .catch(err =>
-      res.status(500).send({ message: `Произошла ошибка: ${err}` })
+      res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` })
     );
 };
 
@@ -15,15 +19,15 @@ const getUsersById = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(404)
+          .status(ERROR_CODE)
           .send({ message: "Пользователь по указанному _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "CastError") {
-        res.status(400).send({ message: "Передан некорректный _id" });
+        res.status(ERROR_CODE).send({ message: "Передан некорректный _id" });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
       }
     });
 };
@@ -35,37 +39,37 @@ const createUser = (req, res) => {
     .catch(err => {
       if (err.name === "CastError") {
         res
-          .status(400)
+          .status(ERROR_CODE)
           .send({
             message: "Переданы некорректные данные при обновлении профиля"
           });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
       }
     });
 };
 
 const updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
-    .then(user => {
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true , runValidators: true})
+    .then((user) => {
       if (user) {
         res.send(user);
       } else {
         res
-          .status(404)
+          .status(ERROR_BAD_REQ)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "CastError") {
         res
-          .status(400)
+          .status(ERROR_CODE)
           .send({
             message: "Переданы некорректные данные при обновлении профиля"
           });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
       }
     });
 };
@@ -78,19 +82,19 @@ const updateAvatar = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(404)
+          .status(ERROR_BAD_REQ)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "CastError") {
         res
-          .status(400)
+          .status(ERROR_CODE)
           .send({
             message: "Переданы некорректные данные при обновлении аватара"
           });
       } else {
-        res.status(500).send({ message: `Произошла ошибка: ${err}` });
+        res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
       }
     });
 };
