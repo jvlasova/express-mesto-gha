@@ -19,7 +19,7 @@ const getUsersById = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(ERROR_CODE)
+          .status(ERROR_BAD_REQ)
           .send({ message: "Пользователь по указанному _id не найден" });
       }
     })
@@ -37,7 +37,7 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then(user => res.send(user))
     .catch(err => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         res
           .status(ERROR_CODE)
           .send({
@@ -62,7 +62,7 @@ const updateUserInfo = (req, res) => {
       }
     })
     .catch(err => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         res
           .status(ERROR_CODE)
           .send({
