@@ -1,8 +1,5 @@
 const Card = require("../models/cards");
-
-const ERROR_CODE = 400;
-const ERROR_BAD_REQ = 404;
-const ERROR_SERVER = 500;
+const { ERROR_BAD_REQ, ERROR_NOT_FOUND, ERROR_SERVER } = require("../utils/constants");
 
 module.exports.getCards = async (req, res) => {
   try {
@@ -17,11 +14,11 @@ module.exports.createCard = async (req, res) => {
   try {
     const { name, link } = req.body;
     const owner = req.user._id;
-    const card = await Card.create({ name, link, owner });
+    const card = await Card.create({  name, link, owner });
     res.send(card);
   } catch (err) {
     if (err.name === "ValidationError") {
-      res.status(ERROR_CODE).send({
+      res.status(ERROR_BAD_REQ).send({
         message: "Переданы некорректные данные при создании карточки"
       });
     } else {
@@ -32,18 +29,18 @@ module.exports.createCard = async (req, res) => {
 
 module.exports.deleteCard = async (req, res) => {
   try {
-    const deleteCard = await Card.findById(req.params.cardId);
-    if (deleteCard) {
+    const card = await Card.findById(req.params.cardId);
+    if (card) {
       res.send({ message: "Карточка удалена" });
     } else {
       res
-        .status(ERROR_BAD_REQ)
-        .send({ message: "Пользователь по указанному _id не найден" });
+        .status(ERROR_NOT_FOUND)
+        .send({ message: "Карточка по указанному _id не найдена." });
     }
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(ERROR_CODE).send({
-        message: "Переданы некорректные данные при создании карточки"
+      res.status(ERROR_BAD_REQ).send({
+        message: "Переданы некорректные данные при создании карточки."
       });
     } else {
       res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
@@ -62,12 +59,12 @@ module.exports.likeCard = async (req, res) => {
       res.send(card);
     } else {
       res
-        .status(ERROR_BAD_REQ)
+        .status(ERROR_NOT_FOUND)
         .send({ message: "Передан несуществующий _id карточки." });
     }
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(ERROR_CODE).send({
+      res.status(ERROR_BAD_REQ).send({
         message: "Переданы некорректные данные при обновлении профиля"
       });
     } else {
@@ -87,12 +84,12 @@ module.exports.dislikeCard = async (req, res) => {
       res.send(card);
     } else {
       res
-        .status(ERROR_BAD_REQ)
+        .status(ERROR_NOT_FOUND)
         .send({ message: "Передан несуществующий _id карточки." });
     }
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(ERROR_CODE).send({
+      res.status(ERROR_BAD_REQ).send({
         message: "Переданы некорректные данные при обновлении профиля"
       });
     } else {

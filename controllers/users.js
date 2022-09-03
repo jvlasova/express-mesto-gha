@@ -1,8 +1,5 @@
 const User = require("../models/users");
-
-const ERROR_CODE = 400;
-const ERROR_BAD_REQ = 404;
-const ERROR_SERVER = 500;
+const { ERROR_BAD_REQ, ERROR_NOT_FOUND, ERROR_SERVER } = require("../utils/constants");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -19,13 +16,13 @@ const getUsersById = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(ERROR_BAD_REQ)
+          .status(ERROR_NOT_FOUND)
           .send({ message: "Пользователь по указанному _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "CastError") {
-        res.status(ERROR_CODE).send({ message: "Передан некорректный _id" });
+        res.status(ERROR_BAD_REQ).send({ message: "Передан некорректный _id" });
       } else {
         res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
       }
@@ -39,7 +36,7 @@ const createUser = (req, res) => {
     .catch(err => {
       if (err.name === "ValidationError") {
         res
-          .status(ERROR_CODE)
+          .status(ERROR_BAD_REQ)
           .send({
             message: "Переданы некорректные данные при обновлении профиля"
           });
@@ -57,14 +54,14 @@ const updateUserInfo = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(ERROR_BAD_REQ)
+          .status(ERROR_NOT_FOUND)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "ValidationError") {
         res
-          .status(ERROR_CODE)
+          .status(ERROR_BAD_REQ)
           .send({
             message: "Переданы некорректные данные при обновлении профиля"
           });
@@ -82,14 +79,14 @@ const updateAvatar = (req, res) => {
         res.send(user);
       } else {
         res
-          .status(ERROR_BAD_REQ)
+          .status(ERROR_NOT_FOUND)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
     })
     .catch(err => {
       if (err.name === "CastError") {
         res
-          .status(ERROR_CODE)
+          .status(ERROR_BAD_REQ)
           .send({
             message: "Переданы некорректные данные при обновлении аватара"
           });
