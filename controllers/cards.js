@@ -29,7 +29,7 @@ module.exports.createCard = async (req, res) => {
 
 module.exports.deleteCard = async (req, res) => {
   try {
-    const card = await Card.findById(req.params.cardId);
+    const card = await Card.findByIdAndRemove(req.params.cardId);
     if (card) {
       res.send({ message: "Карточка удалена" });
     } else {
@@ -50,7 +50,7 @@ module.exports.deleteCard = async (req, res) => {
 
 module.exports.likeCard = async (req, res) => {
   try {
-    const card = await Card.findById(
+    const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true }
@@ -65,7 +65,7 @@ module.exports.likeCard = async (req, res) => {
   } catch (err) {
     if (err.name === "CastError") {
       res.status(ERROR_BAD_REQ).send({
-        message: "Переданы некорректные данные при обновлении профиля"
+        message: "Передан некорректный _id карточки"
       });
     } else {
       res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
@@ -75,7 +75,7 @@ module.exports.likeCard = async (req, res) => {
 
 module.exports.dislikeCard = async (req, res) => {
   try {
-    const card = await Card.findById(
+    const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true }
@@ -90,7 +90,7 @@ module.exports.dislikeCard = async (req, res) => {
   } catch (err) {
     if (err.name === "CastError") {
       res.status(ERROR_BAD_REQ).send({
-        message: "Переданы некорректные данные при обновлении профиля"
+        message: "Передан некорректный _id карточки"
       });
     } else {
       res.status(ERROR_SERVER).send({ message: `Произошла ошибка: ${err}` });
