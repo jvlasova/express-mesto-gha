@@ -61,7 +61,7 @@ const createUser = (req, res, next) => {
         .then((user) => {
           const userInfo = user.toObject();
           delete userInfo.password;
-          res.send(user);
+          res.send(userInfo);
         })
         .catch((e) => {
           if (e.code === 11000) {
