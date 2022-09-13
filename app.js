@@ -33,7 +33,8 @@ app.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().min(7),
+      // eslint-disable-next-line no-useless-escape
+      avatar: Joi.string().min(7).pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/),
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
@@ -45,8 +46,9 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(NotFoundError).send({ message: 'Страница не найдена' });
+app.use((req, res, next) => {
+  const err = new NotFoundError('Страница не найдена');
+  next(err);
 });
 
 app.use(errors());

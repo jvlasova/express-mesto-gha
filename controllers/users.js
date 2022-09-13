@@ -12,7 +12,7 @@ const getUsers = (req, res, next) => {
 };
 
 const getMe = (req, res, next) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send(user);
@@ -59,10 +59,12 @@ const createUser = (req, res, next) => {
         email, password: hash, name, about, avatar,
       })
         .then((user) => {
+          const userInfo = user.toObject();
+          delete userInfo.password;
           res.send(user);
         })
         .catch((e) => {
-          if (e.name === 11000) {
+          if (e.code === 11000) {
             const err = new EmailError('Пользователь с таким email уже зарегистрирован');
             next(err);
             return;
