@@ -115,12 +115,12 @@ const updateUserInfo = (req, res, next) => {
     })
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        const err = new BadReqError('Переданы некорректные данные при обновлении профиля');
+        const err = new BadReqError('Переданы некорректные данные при обновлении пользователя');
         next(err);
         return;
       }
-      if (e.name === 'ValidationError') {
-        const err = new BadReqError('Переданы некорректные данные при создании профиля');
+      if (e.name === 'CastError') {
+        const err = new BadReqError('Передан некорректный _id пользователя');
         next(err);
       } else {
         next(e);

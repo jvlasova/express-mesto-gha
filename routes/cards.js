@@ -1,5 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
+const { validateUserId } = require('../validation/validation');
 
 const cards = express.Router();
 const {
@@ -10,6 +11,9 @@ const {
   dislikeCard,
 } = require('../controllers/cards');
 
+// eslint-disable-next-line no-useless-escape
+const validateUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/;
+
 cards.get('/', express.json(), getCards);
 
 cards.post(
@@ -18,8 +22,7 @@ cards.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      // eslint-disable-next-line no-useless-escape
-      link: Joi.string().required().min(2).pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/),
+      link: Joi.string().required().pattern(validateUrl),
     }),
   }),
   createCard,
@@ -30,7 +33,7 @@ cards.delete(
   express.json(),
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().pattern(/[\da-f]{24}/),
+      cardId: Joi.string().pattern(validateUserId),
     }),
   }),
   deleteCard,
@@ -41,7 +44,7 @@ cards.put(
   express.json(),
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().pattern(/[\da-f]{24}/),
+      cardId: Joi.string().pattern(validateUserId),
     }),
   }),
   likeCard,
@@ -52,7 +55,7 @@ cards.delete(
   express.json(),
   celebrate({
     params: Joi.object().keys({
-      cardId: Joi.string().pattern(/[\da-f]{24}/),
+      cardId: Joi.string().pattern(validateUserId),
     }),
   }),
   dislikeCard,

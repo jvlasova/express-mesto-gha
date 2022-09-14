@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// eslint-disable-next-line no-useless-escape
+const validateUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/;
+
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,8 +15,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        // eslint-disable-next-line no-useless-escape
-        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/.test(v);
+        return validateUrl.test(v);
       },
       message: 'Введите ссылку на изображение',
     },
