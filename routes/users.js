@@ -1,6 +1,7 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 const { validateUserId } = require('../validation/validation');
+const { validateUrl } = require('../validation/validation');
 
 const users = express.Router();
 const {
@@ -11,14 +12,11 @@ const {
   updateAvatar,
 } = require('../controllers/users');
 
-// eslint-disable-next-line no-useless-escape
-const validateUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/;
-
 users.get('/', express.json(), getUsers);
 
 users.get('/me', express.json(), getMe);
 
-users.get('/:userId', validateUserId, getUsersById);
+users.get('/:userId', express.json(), validateUserId, getUsersById);
 
 users.patch(
   '/me',

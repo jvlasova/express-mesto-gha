@@ -115,7 +115,7 @@ const updateUserInfo = (req, res, next) => {
     })
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        const err = new BadReqError('Переданы некорректные данные при обновлении пользователя');
+        const err = new BadReqError('Переданы некорректные данные при обновлении профиля');
         next(err);
         return;
       }

@@ -5,15 +5,14 @@ const { errors, celebrate, Joi } = require('celebrate');
 
 const NotFoundError = require('./errors/not_found_error');
 
+const { validateUrl } = require('./validation/validation');
+
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
-
-// eslint-disable-next-line no-useless-escape
-const validateUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?#?$/;
 
 app.use(cookieParser());
 
